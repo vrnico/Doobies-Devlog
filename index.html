@@ -79,14 +79,43 @@ a{color:inherit}
 @media(max-width:620px){.nav a.lnk{display:none}}
 
 /* ---------- hero ---------- */
-.hero{padding:clamp(46px,9vw,84px) 0 clamp(30px,5vw,48px);text-align:center}
-.logo{width:min(560px,84%);margin:0 auto 26px;filter:drop-shadow(0 14px 40px rgba(0,0,0,.6))}
+.hero{
+  position:relative;isolation:isolate;overflow:hidden;text-align:center;
+  padding:clamp(44px,7vw,76px) 0 clamp(48px,7vw,76px);
+  min-height:min(700px,82vh);display:flex;align-items:center;
+}
+/* the game, playing behind everything. blurred on purpose: it stops the HUD
+   in the footage competing with the type, and it hides the low bitrate. */
+.hero-bg{position:absolute;inset:0;z-index:-2;background:#0f1a12}
+.hero-bg video,.hero-bg .poster{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:blur(2.5px) saturate(1.25) brightness(.92);
+  transform:scale(1.08);
+}
+.hero-bg .poster{position:absolute;inset:0}
+.hero-bg video{position:relative;opacity:0;transition:opacity .9s ease}
+.hero-bg video.on{opacity:1}
+.scrim{
+  position:absolute;inset:0;z-index:-1;
+  background:
+    radial-gradient(105% 72% at 50% 46%,rgba(10,12,15,.62),rgba(10,12,15,.34) 58%,rgba(10,12,15,.66) 100%),
+    linear-gradient(180deg,rgba(12,13,16,.80) 0,rgba(12,13,16,.10) 22%,rgba(12,13,16,.30) 62%,var(--paper) 99%);
+}
+.hero .shell{position:relative;z-index:1}
+.logo{
+  width:min(560px,84%);margin:0 auto 26px;
+  filter:drop-shadow(0 6px 12px rgba(0,0,0,.65)) drop-shadow(0 20px 46px rgba(0,0,0,.75));
+}
 .tag{
   font-size:clamp(20px,3.6vw,30px);font-weight:800;letter-spacing:-.025em;
   line-height:1.22;max-width:17em;margin:0 auto;
+  text-shadow:0 2px 18px rgba(0,0,0,.8),0 1px 3px rgba(0,0,0,.7);
 }
 .tag em{font-style:normal;color:var(--pink)}
-.sub{color:var(--dim);max-width:34em;margin:1em auto 0;font-size:clamp(15px,1.9vw,17px)}
+.sub{
+  color:#d3d2d8;max-width:34em;margin:1em auto 0;font-size:clamp(15px,1.9vw,17px);
+  text-shadow:0 1px 14px rgba(0,0,0,.85),0 1px 2px rgba(0,0,0,.7);
+}
 .btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:2em}
 .btn{
   display:inline-block;text-decoration:none;font:800 15px/1 system-ui;
@@ -99,15 +128,16 @@ a{color:inherit}
 
 .status{
   display:inline-flex;align-items:center;gap:9px;margin-top:2.2em;
-  font:600 12.5px/1 var(--mono);letter-spacing:.02em;color:var(--dim);
-  border:1px solid var(--line);border-radius:999px;padding:9px 15px;background:var(--panel);
+  font:600 12.5px/1 var(--mono);letter-spacing:.02em;color:#cfced6;
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:9px 15px;
+  background:rgba(12,13,16,.62);backdrop-filter:blur(8px);
 }
 .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;
   box-shadow:0 0 0 0 rgba(84,207,51,.6);animation:p 2.4s infinite}
 @keyframes p{70%{box-shadow:0 0 0 9px rgba(84,207,51,0)}100%{box-shadow:0 0 0 0 rgba(84,207,51,0)}}
 
 /* ---------- dots rule ---------- */
-.dots{display:flex;gap:7px;justify-content:center;margin:clamp(38px,7vw,64px) 0}
+.dots{display:flex;gap:7px;justify-content:center;margin:clamp(28px,5vw,46px) 0}
 .dots i{width:10px;height:10px;border-radius:50%;display:block}
 
 /* ---------- facts ---------- */
@@ -124,7 +154,7 @@ a{color:inherit}
 .facts .m{color:var(--dimmer);text-transform:none;letter-spacing:.02em;font-size:10.5px;margin-top:.3em}
 
 /* ---------- sections ---------- */
-section{padding:clamp(52px,9vw,90px) 0}
+section{padding:clamp(44px,6.5vw,72px) 0}
 .h2{font-size:clamp(27px,5vw,42px);font-weight:900;letter-spacing:-.035em;line-height:1.05;margin-top:.45em}
 .lede{color:var(--dim);max-width:36em;margin-top:.9em;font-size:clamp(15.5px,2vw,17.5px)}
 
@@ -150,7 +180,7 @@ figcaption b{color:var(--ink);font-weight:800}
   border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);
   display:flex;flex-direction:column;
 }
-.card img{width:100%}
+.card img{width:100%;aspect-ratio:16/8;object-fit:cover;background:#2b3340}
 .card .body{padding:1.15em 1.2em 1.4em}
 .card h3{font-size:20px;font-weight:900;letter-spacing:-.02em}
 .card h3 .who{font:700 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;
@@ -245,6 +275,13 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 <a id="top"></a>
 
 <header class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <img class="poster" src="./media/bg-poster.jpg" alt="" width="1280" height="614" fetchpriority="high">
+    <video id="bgvid" muted playsinline loop preload="none"
+           poster="./media/bg-poster.jpg" disablepictureinpicture tabindex="-1"></video>
+  </div>
+  <div class="scrim" aria-hidden="true"></div>
+
   <div class="shell">
     <picture>
       <source srcset="./logo.webp" type="image/webp">
@@ -324,7 +361,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 
     <div class="cast">
       <div class="card">
-        <img src="./shots/squirma.jpg" loading="lazy" alt="Squirma standing on a board space in a green low-poly landscape">
+        <img src="./shots/squirma.jpg" loading="lazy" alt="Squirma from the front, three-quarter and side — a yellow long-armed figure in a red bikini, rendered from the rig test">
         <div class="body">
           <h3><span class="who">The hustler</span>Squirma</h3>
           <p>Tall, yellow, very long arms, red bikini. She'll sell you a dub for twelve
@@ -363,116 +400,64 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 
     <article class="entry">
       <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Netcode</span><span class="chip">Shipped</span></div>
-      <h3>It's called Doobies now, and you can play it over the internet</h3>
+      <h3>It's called Doobies, and it plays over the internet</h3>
 
-      <p>The game had a working title I never liked and a networked scene that was really
-        a connection test with doobies standing in it. Both are gone. There's a title
-        screen you can type your name into, a code or an IP you can join with, and the
-        actual game — the real board, the real spaces, the real minigame ladder — running
-        on the other side of it. Turn order gets rolled online now instead of being decided
-        by whoever loaded first.</p>
+      <p>The networked scene used to be a connection test with doobies standing in it.
+        It's the actual game now — real board, real spaces, real minigame ladder — behind
+        a title screen you can type your name into and a code you can join with. Turn
+        order gets rolled online instead of decided by whoever loaded first.</p>
 
-      <p>Three of the bugs I fixed getting there were the same bug wearing different hats:
-        nothing in the scene was listening, so you couldn't type; <code>HudBuild</code> turned
-        <code>raycastTarget</code> off on every element it made, so nothing was clickable;
-        and a flicker I'd introduced myself the day before. None of them are interesting.
-        All of them were between me and a person playing this.</p>
-
-      <div class="grid2" style="margin-top:1.6em">
-        <figure><img src="./shots/menu.jpg" loading="lazy" alt="The Doobies title screen with name entry and join code">
-          <figcaption><b>TITLE</b> · type a name, take a code, go</figcaption></figure>
-        <figure><img src="./shots/online.jpg" loading="lazy" alt="A live networked match, host panel top right">
-          <figcaption><b>LIVE</b> · the real board, hosted, one connected</figcaption></figure>
-      </div>
-
-      <div class="next"><b>Next:</b> put a build in somebody else's hands and watch them
-        fail to connect. That's the only test left that means anything.</div>
-    </article>
-
-    <article class="entry">
-      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Broke it</span></div>
-      <h3>Nothing rendered in the build. In all six minigames.</h3>
-
-      <p>Every minigame looked fine in the editor and shipped completely empty in a real
-        player build. The art was being pulled in through editor-only APIs, so the moment
-        you made an actual build there was nothing there — no props, no doobies, no floor.
-        Six for six. It had been true for days and I'd never once looked, because the
+      <p>Then I made a real build and found the art in all six minigames was editor-only,
+        so every one of them shipped completely empty. It had been true for days. The
         editor was always right there being green at me.</p>
 
-      <p>The fix was a kit asset the minigames load from at runtime, so the art survives
-        into a build instead of only existing while Unity's open. Which is a fine fix.
-        The uncomfortable part is that this is the second time this week the lesson has
-        been the same one: <b>it works in the editor</b> and <b>it works</b> are different
-        sentences, and I keep reading the first one as the second.</p>
+      <div class="grid2" style="margin-top:1.6em">
+        <figure><img src="./shots/menu.jpg" loading="lazy" alt="The Doobies title screen with name entry and a join code field">
+          <figcaption><b>TITLE</b> · type a name, take a code, go</figcaption></figure>
+        <figure><img src="./shots/online.jpg" loading="lazy" alt="A live networked match, host panel top right">
+          <figcaption><b>LIVE</b> · hosted, and someone else is in it</figcaption></figure>
+      </div>
 
-      <div class="next"><b>Next:</b> make a build every single day, even a broken one,
-        so the gap between those two sentences never gets more than a day wide again.</div>
-    </article>
-
-    <article class="entry">
-      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Design</span><span class="chip">Measured</span></div>
-      <h3>I built a simulator to find inflation and found the opposite problem</h3>
-
-      <p>The board pays out about one doink a landing, which felt like too much, so I wrote
-        a little harness that compiles the same rules the game and the tests use and plays
-        thousands of matches without an engine attached. I expected it to tell me money was
-        being minted too fast. It told me something worse and much more boring: <b>one
-        four-player match in five ends with nobody owning a dub at all</b>, so the win
-        condition never fires and the whole thing resolves on the tiebreaker.</p>
-
-      <p>Doinks pile up because there is nothing to buy, not because too many are made.
-        Half the time a player is rich enough for a dub and cannot reach one. The fix I had
-        queued — making the two cheap spaces pay the same — measures <em>worse</em>: it
-        drains money without opening anywhere to spend it.</p>
-
-      <p>The part I'd rather not write down: my first version of the harness watched only
-        the acting player's balance, which counts every sideways transfer as new money.
-        It produced numbers that looked completely plausible and were wrong, and I'd have
-        shipped the wrong change off the back of them if a second, dumber calculation
-        hadn't disagreed with it.</p>
-
-      <div class="next"><b>Next:</b> more places to spend, not less money coming in.
-        Four dub spaces takes it from 20% dubless to 6%.</div>
+      <div class="next"><b>Next:</b> put a build in someone else's hands and watch them
+        fail to connect. It's the only test left that means anything.</div>
     </article>
 
     <article class="entry">
       <div class="meta"><span class="date">Aug 1, 2026</span><span class="chip">Rejected</span></div>
-      <h3>I deleted a whole minigame the same day I liked one</h3>
+      <h3>Squeem got a skeleton and Bumper Pit got deleted</h3>
 
-      <p>Two minigames landed on the same day. One of them, Color Claim, is the first thing
-        in this project's history I've liked without being asked. The other, Bumper Pit, I
-        killed on sight. Here's what I actually said about it, and I'm not softening it:</p>
+      <p>Squeem — the casino man — went from a measured mesh to thirteen bones and nine
+        animation clips in a day, and I signed off all nine. Three more minigames landed
+        the same day: Color Call, Color Dial, Chopper Run. A fourth, Bumper Pit, I killed
+        on sight:</p>
 
-      <blockquote>"It's not even really a game, there's no doobies in it, it's top down, it
-        feels like there's no user control, it's really poorly made."</blockquote>
+      <blockquote>"It's not even really a game, there's no doobies in it, it's top down,
+        it feels like there's no user control, it's really poorly made."</blockquote>
 
-      <p>The handoff notes claimed it was verified and working. It was neither. That's the
-        whole lesson: a clean compile and passing tests do not mean a human being would
-        enjoy touching it. So the rule now is that nothing counts as done until somebody
-        has actually <em>played</em> it — real characters, a camera you can play from,
-        working controls.</p>
+      <p>Its notes said it was verified and working. It was neither. Nothing counts as
+        done here now until a human has actually <em>played</em> it.</p>
 
       <figure><img src="./shots/doinkdash.jpg" loading="lazy" alt="Doink Dash, ten players scrambling for coins on a shrinking floor">
-        <figcaption><b>DOINK DASH</b> · survived the same review. Grab them before they run out.</figcaption></figure>
+        <figcaption><b>DOINK DASH</b> · survived the same review</figcaption></figure>
 
-      <div class="next"><b>Next:</b> figure out whether stealing a tile feels different
-        from painting a bare one. That's the entire design target and I still don't know.</div>
+      <div class="next"><b>Next:</b> work out whether stealing a tile feels different from
+        painting a bare one. That's the whole design target and I still don't know.</div>
     </article>
 
     <article class="entry">
-      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">First post</span></div>
-      <h3>I burned a month of tokens in two days</h3>
+      <div class="meta"><span class="date">Jul 31, 2026</span><span class="chip">First post</span></div>
+      <h3>I pointed everything at it at once and burned a month of tokens</h3>
 
-      <p>Spent Friday and Saturday running a whole fleet of agents at the party game and
-        blew essentially my entire month's AI budget doing it. What came out the other
-        side: a rules engine with a hundred and fifty passing tests, twenty-seven pieces
-        of 3D art, a working coin economy, event spaces that roll three dice at once, and
-        multiplayer that actually holds together.</p>
+      <p>One day: a minigame framework with a seeded contract under it, the first minigame
+        on top of that, Squirma turning up at her own spaces to react to every landing,
+        and a HUD that survives ten players. Also every sound effect in the game existed
+        and not one of them fired, and the agents were all sharing a single git index, so
+        they kept committing each other's half-finished work.</p>
 
-      <p>Then I sat back and realised the number of human beings who knew any of it existed
-        was zero. I did the expensive part and skipped the free part. So — this. Hello.</p>
+      <p>Then I sat back and realised the number of people who knew any of it existed was
+        zero. I did the expensive part and skipped the free part. So — this. Hello.</p>
 
-      <figure><img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim, ten players painting territory">
+      <figure><img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim, ten players painting territory across a tilted grid">
         <figcaption><b>COLOR CLAIM</b> · ten players, forty-five seconds, one floor</figcaption></figure>
 
       <div class="next"><b>Next:</b> record thirty seconds of the doobies moving and put
@@ -534,6 +519,33 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
       it's dated. Nothing here is a mockup.</p>
   </div>
 </footer>
+
+<script>
+// Hero background footage. The poster image is always there; the 2MB clip only
+// downloads if the visitor is on a wide screen, isn't on a metered connection,
+// and hasn't asked for reduced motion. It fades in when it can actually play,
+// so nobody ever sees a black rectangle waiting for a video.
+(function(){
+  var v = document.getElementById('bgvid');
+  if (!v) return;
+  var wide = window.matchMedia('(min-width:760px)').matches;
+  var still = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var conn = navigator.connection || {};
+  var cheap = !conn.saveData && !/^([23]g|slow-2g)$/.test(conn.effectiveType || '');
+  if (!wide || still || !cheap) return;
+
+  v.addEventListener('canplay', function(){ v.classList.add('on'); }, {once:true});
+  v.src = './media/bg.mp4';
+  v.load();
+  var go = v.play();
+  if (go && go.catch) go.catch(function(){ /* autoplay refused — poster stays */ });
+
+  // don't decode video nobody is looking at
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden) v.pause(); else v.play().catch(function(){});
+  });
+})();
+</script>
 
 <script async src="https://tally.so/widgets/embed.js"></script>
 <script>
