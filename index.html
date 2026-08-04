@@ -1,6 +1,5 @@
 <!doctype html>
-<html lang="en">
-<head>
+<html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Doobies</title>
@@ -12,7 +11,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="./logo.gif">
 
-<style>
+<style id="page-css">
 :root{
   --pink:#ef4c86;
   --green:#54cf33;
@@ -302,8 +301,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 <header class="hero">
   <div class="hero-bg" aria-hidden="true">
     <img class="poster" src="./media/bg-poster.jpg" alt="" width="1280" height="704" fetchpriority="high">
-    <video id="bgvid" muted playsinline loop preload="none"
-           poster="./media/bg-poster.jpg" disablepictureinpicture tabindex="-1"></video>
+    <video id="bgvid" muted="" playsinline="" loop="" preload="none" poster="./media/bg-poster.jpg" disablepictureinpicture="" tabindex="-1"></video>
   </div>
   <div class="scrim" aria-hidden="true"></div>
 
@@ -313,12 +311,11 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
       <img class="logo" src="./logo.gif" width="633" height="188" alt="doobies">
     </picture>
 
-    <h1 class="tag">A 4 to 10 player party game about <em>very small crimes</em>.</h1>
-    <p class="sub">Race a board, win minigames, and try to hold onto your money.
-      Online or in the same room.</p>
+    <h1 class="tag">A 4 to 10 player party slop game</h1>
+    <p class="sub">Like Mario Party if it was made by a broke artist / failed game developer</p>
 
     <div class="btns">
-      <a class="btn" href="#playtest">Help me playtest it</a>
+      <a class="btn" href="#playtest">HELP ME PLAYTEST</a>
       <a class="btn ghost" href="#log">Read the log</a>
     </div>
 
@@ -339,8 +336,8 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
   <div class="facts">
     <div><b style="color:var(--pink)">4-10</b><span>players</span><span class="m">local or online</span></div>
     <div><b style="color:var(--green)">6</b><span>minigames</span><span class="m">playable now</span></div>
-    <div><b style="color:var(--blue)">178</b><span>tests green</span><span class="m">151 rules, 27 netcode</span></div>
-    <div><b style="color:var(--orange)">32</b><span>3D assets</span><span class="m">all made in house</span></div>
+    <div><b style="color:var(--blue)">178</b><span>tests green</span><span class="m">151 rules, 27 netcode 100% Claude hallucinated happy paths</span></div>
+    <div><b style="color:var(--orange)">32</b><span>3D assets</span><span class="m">all made in house! NO AI ART (get the computer to do the computer stuff)</span></div>
   </div>
 </div>
 
@@ -354,8 +351,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
       you get one.</p>
 
     <figure>
-      <img src="./shots/squeem.jpg" loading="lazy" width="1060" height="545"
-           alt="Squeem, a green casino character in a top hat, holding a card">
+      <img src="./shots/squeem.jpg" loading="lazy" width="1060" height="545" alt="Squeem, a green casino character in a top hat, holding a card">
       <figcaption><b>EVENT SPACE</b> · Squeem takes 20 doinks and tells you about himself</figcaption>
     </figure>
 
@@ -418,14 +414,13 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 
     <article class="entry">
       <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Netcode</span></div>
-      <h3>It's called Doobies, and it plays over the internet</h3>
+      <h3>we're calling it doobies now, and it's networked...? Maybe?</h3>
 
-      <p>The networked scene used to be a connection test with doobies standing in it. It's
-        the real game now, behind a title screen you can type a name into and a code you can
+      <p>The networked scene used to be a connection test with doobies standing in it. It's pretty much the real game now, behind a title screen you can type a name into and a code you can
         join with. Turn order gets rolled online instead of decided by who loaded first.</p>
 
       <p>Then I made a real build and found the art in all six minigames was editor only, so
-        every one of them shipped empty. It had been true for days.</p>
+        every one of them shipped empty. Opus 5 is hallucinating the f outta this task</p>
 
       <div class="grid2" style="margin-top:1.6em">
         <figure><img src="./shots/menu.jpg" loading="lazy" alt="The Doobies title screen with name entry and a join code field">
@@ -434,8 +429,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
           <figcaption><b>LIVE</b> · hosted, and someone else is in it</figcaption></figure>
       </div>
 
-      <div class="next"><b>Next:</b> put a build in someone else's hands and watch them fail
-        to connect.</div>
+      <div class="next"><b>Next:</b>&nbsp;convince y'all to fill out that form at the bottom and test play this with me!</div>
     </article>
 
     <article class="entry">
@@ -443,14 +437,13 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
       <h3>Squeem got a skeleton, Bumper Pit got deleted</h3>
 
       <p>Squeem, the casino guy, went from a measured mesh to thirteen bones and nine
-        animation clips in a day. Three more minigames landed: Color Call, Color Dial,
-        Chopper Run. A fourth, Bumper Pit, I killed on sight:</p>
+        animation clips in a day. Three more minigames landed: Color Call, Color Dial (basically a dialed.gg knockoff),
+        Chopper Run (helicopter game). A fourth, Bumper Pit, I killed on sight:</p>
 
       <blockquote>"It's not even really a game, there's no doobies in it, it's top down, it
         feels like there's no user control, it's really poorly made."</blockquote>
 
-      <p>Its notes said it was verified. It wasn't. Nothing counts as done here until
-        someone has played it.</p>
+      <p>Classic Claude said it was verified. It wasn't it was trash. Nothing counts as done here until I play it and like it.</p>
 
       <figure><img src="./shots/doinkdash.jpg" loading="lazy" alt="Doink Dash, ten players scrambling for coins on a shrinking floor">
         <figcaption><b>DOINK DASH</b> · survived the same review</figcaption></figure>
@@ -468,7 +461,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
         every sound effect existed and none of them fired, and the agents shared one git
         index so they kept committing each other's work.</p>
 
-      <p>Then I realised nobody outside this machine knew any of it existed. So, this.</p>
+      <p>Also Claude is defaulting to UK spellings of color which is v annoying</p>
 
       <figure><img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim, ten players painting territory">
         <figcaption><b>COLOR CLAIM</b> · ten players, forty-five seconds, one floor</figcaption></figure>
@@ -493,9 +486,9 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
     </div>
 
     <p class="eyebrow">The one ask</p>
-    <h2 class="h2">Come and break it with your friends.</h2>
-    <p class="lede">A party game can't be tested by one person. I need groups of four to ten
-      who'll play something half finished and tell me the truth about it.</p>
+    <h2 class="h2">Come and break it with me!</h2>
+    <p class="lede">A party game can't be tested alone. I need groups of four to ten
+      who'll play something half finished and tell me the truth about it. (maybe even stream with me and get some sweet sweet dev credit!)</p>
 
     <div class="ask">
       <p style="font-weight:800;font-size:17px">What you're signing up for</p>
@@ -509,9 +502,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
       <div class="formcard">
         <div class="bar"><span class="dot"></span>Squeem says: fill this in</div>
         <div class="inner">
-          <iframe data-tally-src="https://tally.so/embed/gDV92l?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1"
-                  loading="lazy" width="100%" height="700" frameborder="0"
-                  marginheight="0" marginwidth="0" title="Doobies playtest sign-up"></iframe>
+          <iframe data-tally-src="https://tally.so/embed/gDV92l?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1" loading="lazy" width="100%" height="700" frameborder="0" marginheight="0" marginwidth="0" title="Doobies playtest sign-up"></iframe>
         </div>
         <p class="fallback">Form not loading? <a href="https://tally.so/r/gDV92l" target="_blank" rel="noopener">Open it in a new tab</a></p>
       </div>
@@ -554,7 +545,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 })();
 </script>
 
-<script async src="https://tally.so/widgets/embed.js"></script>
+<script async="" src="https://tally.so/widgets/embed.js"></script>
 <script>
 (function(){
   var load = function(){
@@ -636,6 +627,12 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
   function exportHtml(){
     var doc = document.documentElement.cloneNode(true);
     doc.querySelectorAll('.ed-btn, #ed-bar').forEach(function(n){ n.remove(); });
+    // Tally's widget script injects its own stylesheet and popup shells at
+    // runtime. They are not part of the page, so they do not go in the file.
+    doc.querySelectorAll('head style:not(#page-css), head link[rel="stylesheet"]:not([data-keep])')
+       .forEach(function(n){ n.remove(); });
+    doc.querySelectorAll('body > div[class^="_"], body > div[id^="tally-"], body > iframe')
+       .forEach(function(n){ n.remove(); });
     doc.querySelectorAll('.ed-target').forEach(function(n){
       n.removeAttribute('contenteditable');
       n.classList.remove('ed-target');
@@ -717,5 +714,6 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 })();
 </script>
 
-</body>
-</html>
+
+
+</body></html>
