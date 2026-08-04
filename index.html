@@ -19,6 +19,7 @@
   --orange:#f0794f;
   --cyan:#8ad6d4;
   --lime:#d7dc82;
+  --twitch:#9146ff;
 
   --ink:#f4f2ee;
   --dim:#9a9aa4;
@@ -128,9 +129,37 @@ a{color:inherit}
   border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:9px 15px;
   background:rgba(12,13,16,.62);backdrop-filter:blur(8px);
 }
+/* display:inline-flex above outranks the browser's own rule for [hidden],
+   so the attribute does nothing here without saying so explicitly. */
+.status[hidden]{display:none}
 .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;
   box-shadow:0 0 0 0 rgba(84,207,51,.6);animation:p 2.4s infinite}
 @keyframes p{70%{box-shadow:0 0 0 9px rgba(84,207,51,0)}100%{box-shadow:0 0 0 0 rgba(84,207,51,0)}}
+
+/* ---------- live on twitch ---------- */
+/* Both badges ship hidden and are only revealed by the twitch script, so a
+   visitor never sees a LIVE pill unless decapi said so this page load. */
+.pulse.tw{background:var(--twitch);box-shadow:0 0 0 0 rgba(145,70,255,.65);animation:tw 2.4s infinite}
+@keyframes tw{70%{box-shadow:0 0 0 9px rgba(145,70,255,0)}100%{box-shadow:0 0 0 0 rgba(145,70,255,0)}}
+
+.nav a.live{
+  display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+  font:700 11.5px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;padding:8px 12px;border-radius:7px;
+  border:1px solid rgba(145,70,255,.55);background:rgba(145,70,255,.14);
+}
+.nav a.live:hover{background:rgba(145,70,255,.3);border-color:var(--twitch)}
+.nav a.live[hidden]{display:none}
+/* The other nav links drop away under 620px. This one must not — a phone is
+   where somebody is most likely to actually go and watch. */
+@media(max-width:620px){.nav a.live{padding:7px 10px;letter-spacing:.05em}}
+
+a.status.live{
+  text-decoration:none;color:var(--ink);border-color:rgba(145,70,255,.5);
+  background:rgba(145,70,255,.13);
+}
+a.status.live:hover{background:rgba(145,70,255,.24);border-color:var(--twitch)}
+a.status.live[hidden]{display:none}
 
 /* ---------- dots rule ---------- */
 .dots{display:flex;gap:7px;justify-content:center;margin:clamp(28px,5vw,46px) 0}
@@ -296,6 +325,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
     <a class="lnk" href="#game">The game</a>
     <a class="lnk" href="#cast">Who's in it</a>
     <a class="lnk" href="#log">Devlog</a>
+    <a class="live" id="tw-nav" data-live href="https://www.twitch.tv/tiny_neek" target="_blank" rel="noopener" hidden><span class="pulse tw"></span>Live on Twitch</a>
     <a class="cta" href="#playtest">Playtest it</a>
   </div>
 </nav>
@@ -323,7 +353,8 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
       <a class="btn ghost" href="#log">Read the log</a>
     </div>
 
-    <div class="status"><span class="pulse"></span>Playable online. No public build yet.</div>
+    <div class="status" id="tw-idle"><span class="pulse"></span>Playable online. No public build yet.</div>
+    <a class="status live" id="tw-hero" data-live href="https://www.twitch.tv/tiny_neek" target="_blank" rel="noopener" hidden><span class="pulse tw"></span>Live on Twitch right now — watch &#9656;</a>
   </div>
 </header>
 
@@ -570,6 +601,55 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
      gets a pencil next to it. Click, type, then Export index.html.
      On the published site none of this runs.
      ================================================================ -->
+
+<script id="tw-live">
+/* Live-on-Twitch badge.
+
+   decapi.me returns a plain-text stream uptime and sends
+   access-control-allow-origin:*, so this page can ask it straight from the
+   browser. No Twitch app, no client secret, nothing running anywhere. If it
+   ever goes away, swap URL_ for our own endpoint — everything below is
+   unchanged, since all it needs back is "a duration, or not". */
+(function(){
+  var CHANNEL = 'tiny_neek';
+  var URL_    = 'https://decapi.me/twitch/uptime/' + CHANNEL;
+  var EVERY   = 90000;
+
+  /* Match a duration rather than looking for the word "offline". decapi
+     answers an unknown channel with the same "<name> is offline" it gives a
+     genuinely dark one, so a typo in CHANNEL would otherwise be
+     indistinguishable from a quiet night. Anything unrecognized reads as
+     not live, which is the direction we want to fail in. */
+  var LIVE = /\d+\s+(second|minute|hour|day|week|month)/i;
+
+  var badges = document.querySelectorAll('[data-live]');
+  var idle   = document.getElementById('tw-idle');
+
+  function show(on){
+    for (var i = 0; i < badges.length; i++) badges[i].hidden = !on;
+    if (idle) idle.hidden = on;
+  }
+
+  function check(){
+    var ctl = new AbortController();
+    var t = setTimeout(function(){ ctl.abort(); }, 8000);
+    fetch(URL_, {cache:'no-store', signal:ctl.signal})
+      .then(function(r){ return r.ok ? r.text() : ''; })
+      .then(function(txt){ clearTimeout(t); show(LIVE.test(txt)); })
+      .catch(function(){ clearTimeout(t); show(false); });
+  }
+
+  check();
+  setInterval(check, EVERY);
+
+  /* A tab left open across a whole stream would otherwise keep showing
+     whatever was true at the moment it was opened. */
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) check();
+  });
+})();
+</script>
+
 <script id="ed-script">
 (function(){
   var local = location.protocol === 'file:' ||
@@ -648,6 +728,13 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
       if (!n.getAttribute('class')) n.removeAttribute('class');
     });
     doc.querySelectorAll('iframe[data-tally-src]').forEach(function(n){ n.removeAttribute('src'); });
+
+    /* The twitch badges are runtime state like the video above. Exporting
+       while Nico happens to be streaming would otherwise bake a permanently
+       lit LIVE pill into the file. Offline is the only correct state on disk. */
+    doc.querySelectorAll('[data-live]').forEach(function(n){ n.setAttribute('hidden',''); });
+    var twIdle = doc.querySelector('#tw-idle');
+    if (twIdle) twIdle.removeAttribute('hidden');
 
     var html = '<!doctype html>\n' + doc.outerHTML + '\n';
     var url = URL.createObjectURL(new Blob([html], {type:'text/html'}));
