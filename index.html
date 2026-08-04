@@ -2,115 +2,555 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Devlog · DOINK DOOBIE</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-  :root{
-    --ink:#f4f2ee;
-    --paper:#0e0f12;
-    --dim:#8b8b93;
-    --accent:#ff3d7f;
-    --line:rgba(255,255,255,.13);
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
-    background:var(--paper);color:var(--ink);
-    line-height:1.65;-webkit-font-smoothing:antialiased;
-  }
-  .wrap{max-width:680px;margin:0 auto;padding:8vh 22px 14vh}
-  .back{
-    font:700 12px/1 ui-monospace,monospace;letter-spacing:.22em;
-    text-transform:uppercase;color:var(--accent);text-decoration:none;
-  }
-  h1{font-size:clamp(34px,8vw,56px);font-weight:900;letter-spacing:-.04em;margin-top:.7em}
-  .sub{color:var(--dim);margin-top:.5em;font-size:16px}
+<title>Doobies — a party game about very small crimes</title>
+<meta name="description" content="A 4–10 player board-and-minigames party game. Race a board, win minigames, get quietly robbed. Built in public. Sign up to playtest.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Doobies">
+<meta property="og:description" content="A 4–10 player party game about very small crimes. In development, in public. Playtesters wanted.">
+<meta property="og:image" content="https://vrnico.github.io/Doobies-Devlog/shots/squeem.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="./logo.gif">
 
-  .entry{border-top:1px solid var(--line);margin-top:3.6em;padding-top:2.3em}
-  .date{
-    font:700 12px/1 ui-monospace,monospace;letter-spacing:.18em;
-    text-transform:uppercase;color:var(--accent);
-  }
-  .entry h2{font-size:clamp(23px,5vw,31px);font-weight:900;letter-spacing:-.025em;margin-top:.6em}
-  .entry p{margin-top:1.05em;font-size:17px}
-  .entry img{
-    display:block;width:100%;height:auto;margin-top:1.6em;
-    border:1px solid var(--line);border-radius:10px;
-  }
-  .entry figcaption{
-    font:600 11px/1.5 ui-monospace,monospace;letter-spacing:.05em;
-    color:var(--dim);margin-top:.6em;
-  }
-  blockquote{
-    margin-top:1.3em;padding:.9em 1.2em;border-left:3px solid var(--accent);
-    background:rgba(255,61,127,.07);font-size:17px;font-style:italic;color:var(--ink);
-  }
-  .next{
-    margin-top:1.6em;padding:.9em 1.15em;border:1px dashed var(--line);
-    border-radius:8px;font-size:16px;color:var(--dim);
-  }
-  .next b{font-weight:800;color:var(--ink)}
+<style>
+:root{
+  /* pulled straight out of the title gif */
+  --pink:#ef4c86;
+  --green:#54cf33;
+  --blue:#6aa8dd;
+  --orange:#f0794f;
+  --cyan:#8ad6d4;
+  --lime:#d7dc82;
+
+  --ink:#f4f2ee;
+  --dim:#9a9aa4;
+  --dimmer:#6f6f79;
+  --paper:#0c0d10;
+  --panel:#15171c;
+  --panel2:#1b1e24;
+  --line:rgba(255,255,255,.11);
+  --line2:rgba(255,255,255,.055);
+  --mono:ui-monospace,'SF Mono',SFMono-Regular,Menlo,Consolas,monospace;
+  --shell:min(1080px,100% - 44px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:74px;-webkit-text-size-adjust:100%}
+body{
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--paper);color:var(--ink);line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(900px 460px at 50% -180px,rgba(239,76,134,.15),transparent 70%),
+    radial-gradient(700px 380px at 88% 4%,rgba(106,168,221,.10),transparent 70%);
+  background-repeat:no-repeat;
+}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+
+.shell{width:var(--shell);margin-inline:auto}
+.eyebrow{
+  font:700 11px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;
+  color:var(--dimmer);
+}
+
+/* ---------- nav ---------- */
+.nav{
+  position:sticky;top:0;z-index:40;
+  backdrop-filter:saturate(1.4) blur(14px);
+  background:rgba(12,13,16,.82);border-bottom:1px solid var(--line2);
+}
+.nav .shell{display:flex;align-items:center;gap:8px;height:58px}
+.brand{
+  font:900 17px/1 system-ui;letter-spacing:-.03em;text-decoration:none;
+  margin-right:auto;display:flex;align-items:center;gap:9px;
+}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--pink);flex:none}
+.nav a.lnk{
+  font:700 13px/1 system-ui;letter-spacing:-.01em;text-decoration:none;color:var(--dim);
+  padding:9px 11px;border-radius:7px;
+}
+.nav a.lnk:hover{color:var(--ink);background:rgba(255,255,255,.05)}
+.nav a.cta{
+  background:var(--pink);color:#0c0d10;padding:9px 14px;border-radius:7px;
+  font:800 13px/1 system-ui;text-decoration:none;white-space:nowrap;
+}
+.nav a.cta:hover{background:var(--green)}
+@media(max-width:620px){.nav a.lnk{display:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(46px,9vw,84px) 0 clamp(30px,5vw,48px);text-align:center}
+.logo{width:min(560px,84%);margin:0 auto 26px;filter:drop-shadow(0 14px 40px rgba(0,0,0,.6))}
+.tag{
+  font-size:clamp(20px,3.6vw,30px);font-weight:800;letter-spacing:-.025em;
+  line-height:1.22;max-width:17em;margin:0 auto;
+}
+.tag em{font-style:normal;color:var(--pink)}
+.sub{color:var(--dim);max-width:34em;margin:1em auto 0;font-size:clamp(15px,1.9vw,17px)}
+.btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:2em}
+.btn{
+  display:inline-block;text-decoration:none;font:800 15px/1 system-ui;
+  padding:15px 22px;border-radius:9px;background:var(--pink);color:#0c0d10;
+  transition:transform .12s ease,background .12s ease;
+}
+.btn:hover{background:var(--green);transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn.ghost:hover{background:rgba(255,255,255,.06);color:var(--ink)}
+
+.status{
+  display:inline-flex;align-items:center;gap:9px;margin-top:2.2em;
+  font:600 12.5px/1 var(--mono);letter-spacing:.02em;color:var(--dim);
+  border:1px solid var(--line);border-radius:999px;padding:9px 15px;background:var(--panel);
+}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--green);flex:none;
+  box-shadow:0 0 0 0 rgba(84,207,51,.6);animation:p 2.4s infinite}
+@keyframes p{70%{box-shadow:0 0 0 9px rgba(84,207,51,0)}100%{box-shadow:0 0 0 0 rgba(84,207,51,0)}}
+
+/* ---------- dots rule ---------- */
+.dots{display:flex;gap:7px;justify-content:center;margin:clamp(38px,7vw,64px) 0}
+.dots i{width:10px;height:10px;border-radius:50%;display:block}
+
+/* ---------- facts ---------- */
+.facts{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:1px;background:var(--line2);border:1px solid var(--line2);border-radius:13px;overflow:hidden;
+}
+.facts div{background:var(--panel);padding:1.25em 1.1em}
+.facts b{display:block;font-size:clamp(26px,4.6vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1}
+.facts span{
+  display:block;margin-top:.55em;font:700 10px/1.35 var(--mono);
+  letter-spacing:.16em;text-transform:uppercase;color:var(--dim);
+}
+.facts .m{color:var(--dimmer);text-transform:none;letter-spacing:.02em;font-size:10.5px;margin-top:.3em}
+
+/* ---------- sections ---------- */
+section{padding:clamp(52px,9vw,90px) 0}
+.h2{font-size:clamp(27px,5vw,42px);font-weight:900;letter-spacing:-.035em;line-height:1.05;margin-top:.45em}
+.lede{color:var(--dim);max-width:36em;margin-top:.9em;font-size:clamp(15.5px,2vw,17.5px)}
+
+/* ---------- shots ---------- */
+figure{
+  border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--panel);
+  margin-top:1.6em;
+}
+figure img{width:100%}
+figcaption{
+  font:600 11.5px/1.5 var(--mono);letter-spacing:.045em;color:var(--dim);
+  padding:.85em 1.05em;border-top:1px solid var(--line2);
+}
+figcaption b{color:var(--ink);font-weight:800}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:13px}
+.grid2 figure{margin-top:0}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:13px;margin-top:1.6em}
+.grid3 figure{margin-top:0}
+
+/* ---------- cast ---------- */
+.cast{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-top:2em}
+.card{
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel);
+  display:flex;flex-direction:column;
+}
+.card img{width:100%}
+.card .body{padding:1.15em 1.2em 1.4em}
+.card h3{font-size:20px;font-weight:900;letter-spacing:-.02em}
+.card h3 .who{font:700 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--dimmer);display:block;margin-bottom:.55em}
+.card p{color:var(--dim);font-size:15px;margin-top:.55em}
+
+/* ---------- devlog ---------- */
+.entry{
+  border-top:1px solid var(--line);padding-top:2em;margin-top:3.2em;
+  position:relative;
+}
+.entry:first-of-type{border-top:0;padding-top:.6em;margin-top:1.8em}
+.meta{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.date{font:700 11.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}
+.chip{
+  font:700 10px/1 var(--mono);letter-spacing:.13em;text-transform:uppercase;
+  border:1px solid var(--line);border-radius:999px;padding:6px 10px;color:var(--dim);
+}
+.entry h3{font-size:clamp(21px,3.7vw,30px);font-weight:900;letter-spacing:-.03em;
+  line-height:1.14;margin-top:.6em;max-width:20em}
+.entry p{margin-top:1em;font-size:16.5px;max-width:40em}
+.entry p code{
+  font:600 14px/1 var(--mono);background:var(--panel2);border:1px solid var(--line2);
+  border-radius:5px;padding:2px 6px;color:var(--cyan);
+}
+blockquote{
+  margin-top:1.3em;padding:1em 1.25em;border-left:3px solid var(--pink);
+  background:rgba(239,76,134,.07);border-radius:0 9px 9px 0;
+  font-size:16.5px;font-style:italic;max-width:40em;
+}
+.next{
+  margin-top:1.7em;padding:.95em 1.15em;border:1px dashed var(--line);
+  border-radius:9px;font-size:15.5px;color:var(--dim);max-width:44em;
+}
+.next b{font-weight:800;color:var(--ink)}
+
+/* ---------- playtest ---------- */
+#playtest{scroll-margin-top:66px}
+.ask{
+  border:1px solid var(--line);border-radius:18px;background:var(--panel);
+  padding:clamp(24px,4.4vw,44px);margin-top:2.2em;
+}
+.asklist{list-style:none;margin-top:1.5em;display:grid;gap:.7em}
+.asklist li{position:relative;padding-left:1.5em;color:var(--dim);font-size:15.5px}
+.asklist li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--green)}
+
+/* the form panel is deliberately light — it reads like the Squeem Says card in game */
+.formcard{
+  margin-top:2em;border-radius:14px;overflow:hidden;
+  border:3px solid #d8a52a;background:#f3ead2;
+  box-shadow:0 18px 50px rgba(0,0,0,.5);
+}
+.formcard .bar{
+  background:linear-gradient(#3d97d8,#2a72ae);color:#fff;
+  font:900 14px/1 system-ui;letter-spacing:.02em;
+  padding:13px 16px;border-bottom:3px solid #d8a52a;
+  display:flex;align-items:center;gap:9px;
+}
+.formcard .bar .dot{width:9px;height:9px;border-radius:50%;background:#f3ead2;flex:none}
+.formcard .inner{padding:6px 10px 10px}
+.formcard iframe{width:100%;border:0;display:block;min-height:520px}
+.fallback{
+  font:600 13px/1.5 system-ui;color:#5d5646;padding:0 8px 12px;text-align:center;
+}
+.fallback a{color:#a8461f}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
+.frow{display:flex;gap:1.6em;flex-wrap:wrap;align-items:center;font-size:15px;color:var(--dim)}
+.frow a{color:var(--ink);text-decoration:none;border-bottom:2px solid var(--pink);padding-bottom:1px}
+.frow a:hover{color:var(--pink)}
+.fnote{margin-top:1.4em;font:600 11.5px/1.6 var(--mono);color:var(--dimmer);max-width:44em}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+}
 </style>
 </head>
 <body>
 
-<div class="wrap">
+<nav class="nav">
+  <div class="shell">
+    <a class="brand" href="#top"><span class="dot"></span>doobies</a>
+    <a class="lnk" href="#game">The game</a>
+    <a class="lnk" href="#cast">Who's in it</a>
+    <a class="lnk" href="#log">Devlog</a>
+    <a class="cta" href="#playtest">Playtest it →</a>
+  </div>
+</nav>
 
-  <a class="back" href="./">← DOINK DOOBIE</a>
-  <h1>Devlog</h1>
-  <p class="sub">What I'm building, as it happens. Newest first.</p>
+<a id="top"></a>
 
-  <!-- ==========================================================
-       New entry? Copy one .entry block and paste it directly
-       BELOW this comment so the newest is always on top.
-       Two sentences and a date is a real post. Publish it.
-       ========================================================== -->
+<header class="hero">
+  <div class="shell">
+    <picture>
+      <source srcset="./logo.webp" type="image/webp">
+      <img class="logo" src="./logo.gif" width="633" height="188"
+           alt="doobies — the title, in wobbling clay letters">
+    </picture>
 
-  <div class="entry">
-    <p class="date">Aug 3, 2026</p>
-    <h2>I burned a month of tokens in two days</h2>
+    <h1 class="tag">A 4–10 player party game about <em>very small crimes</em>.</h1>
+    <p class="sub">Race a board. Win minigames. Get quietly robbed by a lady named
+      Squirma and lied to by a casino man in a top hat. Built in public, at speed,
+      by one person with a fleet of agents and no shame.</p>
 
-    <p>Spent Friday and Saturday running a whole fleet of agents at the party
-    game and blew essentially my entire month's AI budget doing it. What came
-    out the other side: 134 passing tests, 27 pieces of 3D art, a working coin
-    economy, event spaces that roll three dice at once, and multiplayer that
-    actually holds together.</p>
+    <div class="btns">
+      <a class="btn" href="#playtest">Help me playtest it →</a>
+      <a class="btn ghost" href="#log">Read the log</a>
+    </div>
 
-    <p>Then I sat back and realised the number of human beings who knew any of
-    it existed was zero. I did the expensive part and skipped the free part.
-    So — this. Hello.</p>
+    <div class="status"><span class="pulse"></span>Playable online right now · no public build yet</div>
+  </div>
+</header>
 
-    <img src="./shots/hero-colourclaim.png" alt="Colour Claim, ten players painting territory">
-    <figcaption>Colour Claim. Ten players, forty-five seconds, one floor.</figcaption>
-
-    <div class="next"><b>Next:</b> record thirty seconds of the doobies moving and put it somewhere a stranger can see it.</div>
+<div class="shell">
+  <div class="dots">
+    <i style="background:var(--pink)"></i>
+    <i style="background:var(--green)"></i>
+    <i style="background:var(--blue)"></i>
+    <i style="background:var(--orange)"></i>
+    <i style="background:var(--cyan)"></i>
+    <i style="background:var(--lime)"></i>
   </div>
 
-  <div class="entry">
-    <p class="date">Aug 1, 2026</p>
-    <h2>I deleted a whole minigame the same day I liked one</h2>
-
-    <p>Two minigames landed on the same day. One of them, Colour Claim, is the
-    first thing in this project's history I've liked without being asked. The
-    other one, Bumper Pit, I killed on sight. Here's what I actually said about
-    it, and I'm not softening it:</p>
-
-    <blockquote>"It's not even really a game, there's no doobies in it, it's top
-    down, it feels like there's no user control, it's really poorly made."</blockquote>
-
-    <p>The handoff notes claimed it was verified and working. It was neither.
-    That's the whole lesson: a clean compile and passing tests do not mean a
-    human being would enjoy touching it. So the rule now is that nothing counts
-    as done until somebody has actually <em>played</em> it — real characters, a
-    camera you can play from, working controls.</p>
-
-    <img src="./shots/doinkdash.png" alt="Doink Dash, ten players scrambling for coins">
-    <figcaption>Doink Dash survived the same review. Grab them before they run out.</figcaption>
-
-    <div class="next"><b>Next:</b> figure out whether stealing a tile feels different from painting a bare one. That's the entire design target and I still don't know.</div>
+  <div class="facts">
+    <div><b style="color:var(--pink)">4–10</b><span>players</span><span class="m">local or over the internet</span></div>
+    <div><b style="color:var(--green)">6</b><span>minigames</span><span class="m">playable, not all good</span></div>
+    <div><b style="color:var(--blue)">178</b><span>tests green</span><span class="m">151 rules · 27 netcode</span></div>
+    <div><b style="color:var(--orange)">32</b><span>3D assets</span><span class="m">all made in-house</span></div>
   </div>
-
 </div>
+
+<!-- ==================== THE GAME ==================== -->
+<section id="game">
+  <div class="shell">
+    <p class="eyebrow">What it actually is</p>
+    <h2 class="h2">A board you race, and a minigame at the end of every round.</h2>
+    <p class="lede">You roll, you land on something, something happens to you — usually
+      expensive. Then everybody gets dumped into a minigame and the money moves again.
+      The goal is a <b>dub</b>. Doinks are just how you get one.</p>
+
+    <figure>
+      <img src="./shots/squeem.jpg" loading="lazy" width="1060" height="545"
+           alt="Squeem, a green casino character in a top hat, holding up a card that reads I'm a casino guy with a top hatt… I wear a diaperrr">
+      <figcaption><b>EVENT SPACE</b> · Squeem takes 20 doinks off you and tells you about himself</figcaption>
+    </figure>
+
+    <div class="grid3">
+      <figure>
+        <img src="./shots/tenplayers.jpg" loading="lazy" alt="Ten players on the board, full scoreboard down the left side">
+        <figcaption><b>TEN PLAYERS</b> · the board holds all of them</figcaption>
+      </figure>
+      <figure>
+        <img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim — ten players painting territory across a tilted grid">
+        <figcaption><b>COLOR CLAIM</b> · one floor, forty-five seconds</figcaption>
+      </figure>
+      <figure>
+        <img src="./shots/chopperrun.jpg" loading="lazy" alt="Chopper Run — doobies with rotor blades flying through a spiked tunnel">
+        <figcaption><b>CHOPPER RUN</b> · hold space, don't touch anything</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CAST ==================== -->
+<section id="cast" style="padding-top:0">
+  <div class="shell">
+    <p class="eyebrow">Who's in it</p>
+    <h2 class="h2">Two of them want your money.</h2>
+
+    <div class="cast">
+      <div class="card">
+        <img src="./shots/squirma.jpg" loading="lazy" alt="Squirma standing on a board space in a green low-poly landscape">
+        <div class="body">
+          <h3><span class="who">The hustler</span>Squirma</h3>
+          <p>Tall, yellow, very long arms, red bikini. She'll sell you a dub for twelve
+            doinks and she will always come out ahead. The rule I wrote for her is that
+            she's <em>never</em> cruel — the second she sounds like she enjoys hurting you
+            she stops being funny. She's generous to whoever's losing and greedy toward
+            whoever's winning, and it's the same line either way.</p>
+        </div>
+      </div>
+      <div class="card">
+        <img src="./shots/online.jpg" loading="lazy" alt="A networked game in progress, host panel top right, four players listed">
+        <div class="body">
+          <h3><span class="who">The mark</span>Your friends</h3>
+          <p>Four to ten of them, over the internet or sat next to you. One types a code,
+            everyone rolls for turn order, and then the board decides who's still speaking
+            at the end. Empty seats fill with CPU players who have names and, regrettably,
+            opinions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DEVLOG ==================== -->
+<section id="log">
+  <div class="shell">
+    <p class="eyebrow">Devlog · newest first</p>
+    <h2 class="h2">Building it in public, badly.</h2>
+    <p class="lede">Every post is something that broke, something that shipped, or
+      something I got wrong out loud. Two sentences and a date counts as a post.</p>
+
+    <!-- ==========================================================
+         NEW ENTRY? Copy one .entry block and paste it directly
+         BELOW this comment so the newest is always on top.
+         ========================================================== -->
+
+    <article class="entry">
+      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Netcode</span><span class="chip">Shipped</span></div>
+      <h3>It's called Doobies now, and you can play it over the internet</h3>
+
+      <p>The game had a working title I never liked and a networked scene that was really
+        a connection test with doobies standing in it. Both are gone. There's a title
+        screen you can type your name into, a code or an IP you can join with, and the
+        actual game — the real board, the real spaces, the real minigame ladder — running
+        on the other side of it. Turn order gets rolled online now instead of being decided
+        by whoever loaded first.</p>
+
+      <p>Three of the bugs I fixed getting there were the same bug wearing different hats:
+        nothing in the scene was listening, so you couldn't type; <code>HudBuild</code> turned
+        <code>raycastTarget</code> off on every element it made, so nothing was clickable;
+        and a flicker I'd introduced myself the day before. None of them are interesting.
+        All of them were between me and a person playing this.</p>
+
+      <div class="grid2" style="margin-top:1.6em">
+        <figure><img src="./shots/menu.jpg" loading="lazy" alt="The Doobies title screen with name entry and join code">
+          <figcaption><b>TITLE</b> · type a name, take a code, go</figcaption></figure>
+        <figure><img src="./shots/online.jpg" loading="lazy" alt="A live networked match, host panel top right">
+          <figcaption><b>LIVE</b> · the real board, hosted, one connected</figcaption></figure>
+      </div>
+
+      <div class="next"><b>Next:</b> put a build in somebody else's hands and watch them
+        fail to connect. That's the only test left that means anything.</div>
+    </article>
+
+    <article class="entry">
+      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Broke it</span></div>
+      <h3>Nothing rendered in the build. In all six minigames.</h3>
+
+      <p>Every minigame looked fine in the editor and shipped completely empty in a real
+        player build. The art was being pulled in through editor-only APIs, so the moment
+        you made an actual build there was nothing there — no props, no doobies, no floor.
+        Six for six. It had been true for days and I'd never once looked, because the
+        editor was always right there being green at me.</p>
+
+      <p>The fix was a kit asset the minigames load from at runtime, so the art survives
+        into a build instead of only existing while Unity's open. Which is a fine fix.
+        The uncomfortable part is that this is the second time this week the lesson has
+        been the same one: <b>it works in the editor</b> and <b>it works</b> are different
+        sentences, and I keep reading the first one as the second.</p>
+
+      <div class="next"><b>Next:</b> make a build every single day, even a broken one,
+        so the gap between those two sentences never gets more than a day wide again.</div>
+    </article>
+
+    <article class="entry">
+      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Design</span><span class="chip">Measured</span></div>
+      <h3>I built a simulator to find inflation and found the opposite problem</h3>
+
+      <p>The board pays out about one doink a landing, which felt like too much, so I wrote
+        a little harness that compiles the same rules the game and the tests use and plays
+        thousands of matches without an engine attached. I expected it to tell me money was
+        being minted too fast. It told me something worse and much more boring: <b>one
+        four-player match in five ends with nobody owning a dub at all</b>, so the win
+        condition never fires and the whole thing resolves on the tiebreaker.</p>
+
+      <p>Doinks pile up because there is nothing to buy, not because too many are made.
+        Half the time a player is rich enough for a dub and cannot reach one. The fix I had
+        queued — making the two cheap spaces pay the same — measures <em>worse</em>: it
+        drains money without opening anywhere to spend it.</p>
+
+      <p>The part I'd rather not write down: my first version of the harness watched only
+        the acting player's balance, which counts every sideways transfer as new money.
+        It produced numbers that looked completely plausible and were wrong, and I'd have
+        shipped the wrong change off the back of them if a second, dumber calculation
+        hadn't disagreed with it.</p>
+
+      <div class="next"><b>Next:</b> more places to spend, not less money coming in.
+        Four dub spaces takes it from 20% dubless to 6%.</div>
+    </article>
+
+    <article class="entry">
+      <div class="meta"><span class="date">Aug 1, 2026</span><span class="chip">Rejected</span></div>
+      <h3>I deleted a whole minigame the same day I liked one</h3>
+
+      <p>Two minigames landed on the same day. One of them, Color Claim, is the first thing
+        in this project's history I've liked without being asked. The other, Bumper Pit, I
+        killed on sight. Here's what I actually said about it, and I'm not softening it:</p>
+
+      <blockquote>"It's not even really a game, there's no doobies in it, it's top down, it
+        feels like there's no user control, it's really poorly made."</blockquote>
+
+      <p>The handoff notes claimed it was verified and working. It was neither. That's the
+        whole lesson: a clean compile and passing tests do not mean a human being would
+        enjoy touching it. So the rule now is that nothing counts as done until somebody
+        has actually <em>played</em> it — real characters, a camera you can play from,
+        working controls.</p>
+
+      <figure><img src="./shots/doinkdash.jpg" loading="lazy" alt="Doink Dash, ten players scrambling for coins on a shrinking floor">
+        <figcaption><b>DOINK DASH</b> · survived the same review. Grab them before they run out.</figcaption></figure>
+
+      <div class="next"><b>Next:</b> figure out whether stealing a tile feels different
+        from painting a bare one. That's the entire design target and I still don't know.</div>
+    </article>
+
+    <article class="entry">
+      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">First post</span></div>
+      <h3>I burned a month of tokens in two days</h3>
+
+      <p>Spent Friday and Saturday running a whole fleet of agents at the party game and
+        blew essentially my entire month's AI budget doing it. What came out the other
+        side: a rules engine with a hundred and fifty passing tests, twenty-seven pieces
+        of 3D art, a working coin economy, event spaces that roll three dice at once, and
+        multiplayer that actually holds together.</p>
+
+      <p>Then I sat back and realised the number of human beings who knew any of it existed
+        was zero. I did the expensive part and skipped the free part. So — this. Hello.</p>
+
+      <figure><img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim, ten players painting territory">
+        <figcaption><b>COLOR CLAIM</b> · ten players, forty-five seconds, one floor</figcaption></figure>
+
+      <div class="next"><b>Next:</b> record thirty seconds of the doobies moving and put
+        it somewhere a stranger can see it.</div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ==================== PLAYTEST ==================== -->
+<section id="playtest">
+  <div class="shell">
+    <div class="dots" style="margin-top:0">
+      <i style="background:var(--lime)"></i>
+      <i style="background:var(--cyan)"></i>
+      <i style="background:var(--orange)"></i>
+      <i style="background:var(--blue)"></i>
+      <i style="background:var(--green)"></i>
+      <i style="background:var(--pink)"></i>
+    </div>
+
+    <p class="eyebrow">The one ask</p>
+    <h2 class="h2">Come and break it with your friends.</h2>
+    <p class="lede">A party game can't be tested by one person. I need groups — four to
+      ten people in a room or on a call — willing to play something half-finished and
+      then tell me the truth about it.</p>
+
+    <div class="ask">
+      <p style="font-weight:800;font-size:17px">What you're signing up for</p>
+      <ul class="asklist">
+        <li>A build, sent to you when there's one worth playing. Windows first.</li>
+        <li>One session, whenever suits you — 30 to 60 minutes with your own people.</li>
+        <li>Telling me honestly what was boring, confusing, or annoying. Especially boring.</li>
+        <li>No spam, no newsletter, no "Doobies weekly." I'll only email you about playing.</li>
+      </ul>
+
+      <div class="formcard">
+        <div class="bar"><span class="dot"></span>Squeem says: fill this in</div>
+        <div class="inner">
+          <iframe data-tally-src="https://tally.so/embed/gDV92l?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1"
+                  loading="lazy" width="100%" height="560" frameborder="0"
+                  marginheight="0" marginwidth="0" title="Doobies playtest sign-up"></iframe>
+        </div>
+        <p class="fallback">Form not loading? <a href="https://tally.so/r/gDV92l" target="_blank" rel="noopener">Open it in a new tab →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="shell">
+    <div class="frow">
+      <a href="mailto:hello@nicodaunt.com">hello@nicodaunt.com</a>
+      <a href="https://tally.so/r/gDV92l" target="_blank" rel="noopener">Playtest sign-up</a>
+      <a href="https://github.com/vrnico/Doobies-Devlog" target="_blank" rel="noopener">This page's source</a>
+    </div>
+    <p class="fnote">Doobies · a 4–10 player party game, in development in public.
+      Everything on this page is a real screenshot of the real thing, taken the day
+      it's dated. Nothing here is a mockup.</p>
+  </div>
+</footer>
+
+<script async src="https://tally.so/widgets/embed.js"></script>
+<script>
+// Tally's documented loader — swaps data-tally-src in once the widget script lands,
+// and fills the src directly if the script is blocked so the form still appears.
+(function(){
+  var load = function(){
+    if (typeof Tally !== 'undefined') { Tally.loadEmbeds(); return; }
+    document.querySelectorAll('iframe[data-tally-src]:not([src])').forEach(function(f){
+      f.src = f.dataset.tallySrc;
+    });
+  };
+  if (document.readyState !== 'loading') load();
+  else document.addEventListener('DOMContentLoaded', load);
+  window.addEventListener('load', load);
+})();
+</script>
 
 </body>
 </html>

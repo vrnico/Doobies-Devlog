@@ -1,0 +1,3 @@
+_backup_*/
+*.mp4
+!media/*.mp4
