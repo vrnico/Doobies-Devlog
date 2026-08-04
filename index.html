@@ -3,18 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Doobies — a party game about very small crimes</title>
-<meta name="description" content="A 4–10 player board-and-minigames party game. Race a board, win minigames, get quietly robbed. Built in public. Sign up to playtest.">
+<title>Doobies</title>
+<meta name="description" content="A 4 to 10 player party game. Race a board, win minigames, keep your money. In development. Playtesters wanted.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Doobies">
-<meta property="og:description" content="A 4–10 player party game about very small crimes. In development, in public. Playtesters wanted.">
+<meta property="og:description" content="A 4 to 10 player party game about very small crimes. In development. Playtesters wanted.">
 <meta property="og:image" content="https://vrnico.github.io/Doobies-Devlog/shots/squeem.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="./logo.gif">
 
 <style>
 :root{
-  /* pulled straight out of the title gif */
   --pink:#ef4c86;
   --green:#54cf33;
   --blue:#6aa8dd;
@@ -84,8 +83,6 @@ a{color:inherit}
   padding:clamp(44px,7vw,76px) 0 clamp(48px,7vw,76px);
   min-height:min(700px,82vh);display:flex;align-items:center;
 }
-/* the game, playing behind everything. blurred on purpose: it stops the HUD
-   in the footage competing with the type, and it hides the low bitrate. */
 .hero-bg{position:absolute;inset:0;z-index:-2;background:#0f1a12}
 .hero-bg video,.hero-bg .poster{
   width:100%;height:100%;object-fit:cover;display:block;
@@ -113,7 +110,7 @@ a{color:inherit}
 }
 .tag em{font-style:normal;color:var(--pink)}
 .sub{
-  color:#d3d2d8;max-width:34em;margin:1em auto 0;font-size:clamp(15px,1.9vw,17px);
+  color:#d3d2d8;max-width:32em;margin:1em auto 0;font-size:clamp(15px,1.9vw,17px);
   text-shadow:0 1px 14px rgba(0,0,0,.85),0 1px 2px rgba(0,0,0,.7);
 }
 .btns{display:flex;gap:11px;justify-content:center;flex-wrap:wrap;margin-top:2em}
@@ -188,10 +185,7 @@ figcaption b{color:var(--ink);font-weight:800}
 .card p{color:var(--dim);font-size:15px;margin-top:.55em}
 
 /* ---------- devlog ---------- */
-.entry{
-  border-top:1px solid var(--line);padding-top:2em;margin-top:3.2em;
-  position:relative;
-}
+.entry{border-top:1px solid var(--line);padding-top:2em;margin-top:3.2em;position:relative}
 .entry:first-of-type{border-top:0;padding-top:.6em;margin-top:1.8em}
 .meta{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
 .date{font:700 11.5px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--pink)}
@@ -227,7 +221,6 @@ blockquote{
 .asklist li{position:relative;padding-left:1.5em;color:var(--dim);font-size:15.5px}
 .asklist li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--green)}
 
-/* the form panel is deliberately light — it reads like the Squeem Says card in game */
 .formcard{
   margin-top:2em;border-radius:14px;overflow:hidden;
   border:3px solid #d8a52a;background:#f3ead2;
@@ -241,10 +234,8 @@ blockquote{
 }
 .formcard .bar .dot{width:9px;height:9px;border-radius:50%;background:#f3ead2;flex:none}
 .formcard .inner{padding:6px 10px 10px}
-.formcard iframe{width:100%;border:0;display:block;min-height:520px}
-.fallback{
-  font:600 13px/1.5 system-ui;color:#5d5646;padding:0 8px 12px;text-align:center;
-}
+.formcard iframe{width:100%;border:0;display:block;min-height:640px}
+.fallback{font:600 13px/1.5 system-ui;color:#5d5646;padding:0 8px 12px;text-align:center}
 .fallback a{color:#a8461f}
 
 /* ---------- footer ---------- */
@@ -258,6 +249,40 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
 }
+
+/* ================================================================
+   EDIT MODE. Only switches on when the page is opened from disk or
+   localhost, so none of it can ever appear on the published site.
+   ================================================================ */
+.ed-btn{
+  all:unset;cursor:pointer;position:absolute;top:-9px;left:-30px;z-index:30;
+  width:23px;height:23px;line-height:23px;text-align:center;border-radius:6px;
+  background:#ef4c86;color:#fff;font:700 12px/23px system-ui;
+  opacity:0;transition:opacity .12s ease;
+}
+.ed-target{position:relative}
+.ed-target:hover > .ed-btn,.ed-btn:focus-visible{opacity:1}
+.ed-target[contenteditable="true"]{
+  outline:2px solid var(--pink);outline-offset:5px;border-radius:3px;
+  background:rgba(239,76,134,.08);
+}
+.ed-target[contenteditable="true"] > .ed-btn{opacity:0!important;pointer-events:none}
+#ed-bar{
+  position:fixed;right:16px;bottom:16px;z-index:9999;display:flex;gap:8px;align-items:center;
+  background:rgba(18,20,25,.94);border:1px solid rgba(255,255,255,.16);border-radius:12px;
+  padding:9px 11px;backdrop-filter:blur(10px);box-shadow:0 14px 40px rgba(0,0,0,.6);
+  font:700 12.5px/1 system-ui;color:#f4f2ee;
+}
+#ed-bar button{
+  all:unset;cursor:pointer;padding:9px 13px;border-radius:8px;background:#22262e;
+  font:800 12.5px/1 system-ui;color:#f4f2ee;
+}
+#ed-bar button:hover{background:#2e333d}
+#ed-bar button.primary{background:var(--pink);color:#0c0d10}
+#ed-bar button.primary:hover{background:var(--green)}
+#ed-bar .st{color:#8b8b93;font-weight:700;padding-right:3px}
+#ed-bar .st.dirty{color:var(--pink)}
+@media print{#ed-bar,.ed-btn{display:none}}
 </style>
 </head>
 <body>
@@ -268,7 +293,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
     <a class="lnk" href="#game">The game</a>
     <a class="lnk" href="#cast">Who's in it</a>
     <a class="lnk" href="#log">Devlog</a>
-    <a class="cta" href="#playtest">Playtest it →</a>
+    <a class="cta" href="#playtest">Playtest it</a>
   </div>
 </nav>
 
@@ -276,7 +301,7 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 
 <header class="hero">
   <div class="hero-bg" aria-hidden="true">
-    <img class="poster" src="./media/bg-poster.jpg" alt="" width="1280" height="614" fetchpriority="high">
+    <img class="poster" src="./media/bg-poster.jpg" alt="" width="1280" height="704" fetchpriority="high">
     <video id="bgvid" muted playsinline loop preload="none"
            poster="./media/bg-poster.jpg" disablepictureinpicture tabindex="-1"></video>
   </div>
@@ -285,21 +310,19 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
   <div class="shell">
     <picture>
       <source srcset="./logo.webp" type="image/webp">
-      <img class="logo" src="./logo.gif" width="633" height="188"
-           alt="doobies — the title, in wobbling clay letters">
+      <img class="logo" src="./logo.gif" width="633" height="188" alt="doobies">
     </picture>
 
-    <h1 class="tag">A 4–10 player party game about <em>very small crimes</em>.</h1>
-    <p class="sub">Race a board. Win minigames. Get quietly robbed by a lady named
-      Squirma and lied to by a casino man in a top hat. Built in public, at speed,
-      by one person with a fleet of agents and no shame.</p>
+    <h1 class="tag">A 4 to 10 player party game about <em>very small crimes</em>.</h1>
+    <p class="sub">Race a board, win minigames, and try to hold onto your money.
+      Online or in the same room.</p>
 
     <div class="btns">
-      <a class="btn" href="#playtest">Help me playtest it →</a>
+      <a class="btn" href="#playtest">Help me playtest it</a>
       <a class="btn ghost" href="#log">Read the log</a>
     </div>
 
-    <div class="status"><span class="pulse"></span>Playable online right now · no public build yet</div>
+    <div class="status"><span class="pulse"></span>Playable online. No public build yet.</div>
   </div>
 </header>
 
@@ -314,39 +337,39 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
   </div>
 
   <div class="facts">
-    <div><b style="color:var(--pink)">4–10</b><span>players</span><span class="m">local or over the internet</span></div>
-    <div><b style="color:var(--green)">6</b><span>minigames</span><span class="m">playable, not all good</span></div>
-    <div><b style="color:var(--blue)">178</b><span>tests green</span><span class="m">151 rules · 27 netcode</span></div>
-    <div><b style="color:var(--orange)">32</b><span>3D assets</span><span class="m">all made in-house</span></div>
+    <div><b style="color:var(--pink)">4-10</b><span>players</span><span class="m">local or online</span></div>
+    <div><b style="color:var(--green)">6</b><span>minigames</span><span class="m">playable now</span></div>
+    <div><b style="color:var(--blue)">178</b><span>tests green</span><span class="m">151 rules, 27 netcode</span></div>
+    <div><b style="color:var(--orange)">32</b><span>3D assets</span><span class="m">all made in house</span></div>
   </div>
 </div>
 
 <!-- ==================== THE GAME ==================== -->
 <section id="game">
   <div class="shell">
-    <p class="eyebrow">What it actually is</p>
-    <h2 class="h2">A board you race, and a minigame at the end of every round.</h2>
-    <p class="lede">You roll, you land on something, something happens to you — usually
-      expensive. Then everybody gets dumped into a minigame and the money moves again.
-      The goal is a <b>dub</b>. Doinks are just how you get one.</p>
+    <p class="eyebrow">What it is</p>
+    <h2 class="h2">A board you race, and a minigame every round.</h2>
+    <p class="lede">You roll, you land on something, and it usually costs you. Then everyone
+      drops into a minigame and the money moves again. First to a dub wins. Doinks are how
+      you get one.</p>
 
     <figure>
       <img src="./shots/squeem.jpg" loading="lazy" width="1060" height="545"
-           alt="Squeem, a green casino character in a top hat, holding up a card that reads I'm a casino guy with a top hatt… I wear a diaperrr">
-      <figcaption><b>EVENT SPACE</b> · Squeem takes 20 doinks off you and tells you about himself</figcaption>
+           alt="Squeem, a green casino character in a top hat, holding a card">
+      <figcaption><b>EVENT SPACE</b> · Squeem takes 20 doinks and tells you about himself</figcaption>
     </figure>
 
     <div class="grid3">
       <figure>
-        <img src="./shots/tenplayers.jpg" loading="lazy" alt="Ten players on the board, full scoreboard down the left side">
+        <img src="./shots/tenplayers.jpg" loading="lazy" alt="Ten players on the board with a full scoreboard">
         <figcaption><b>TEN PLAYERS</b> · the board holds all of them</figcaption>
       </figure>
       <figure>
-        <img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim — ten players painting territory across a tilted grid">
+        <img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim, ten players painting territory on a tilted grid">
         <figcaption><b>COLOR CLAIM</b> · one floor, forty-five seconds</figcaption>
       </figure>
       <figure>
-        <img src="./shots/chopperrun.jpg" loading="lazy" alt="Chopper Run — doobies with rotor blades flying through a spiked tunnel">
+        <img src="./shots/chopperrun.jpg" loading="lazy" alt="Chopper Run, doobies with rotor blades flying through a spiked tunnel">
         <figcaption><b>CHOPPER RUN</b> · hold space, don't touch anything</figcaption>
       </figure>
     </div>
@@ -361,24 +384,21 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 
     <div class="cast">
       <div class="card">
-        <img src="./shots/squirma.jpg" loading="lazy" alt="Squirma from the front, three-quarter and side — a yellow long-armed figure in a red bikini, rendered from the rig test">
+        <img src="./shots/squirma.jpg" loading="lazy" alt="Squirma from the front, three-quarter and side, rendered from her rig test">
         <div class="body">
           <h3><span class="who">The hustler</span>Squirma</h3>
-          <p>Tall, yellow, very long arms, red bikini. She'll sell you a dub for twelve
-            doinks and she will always come out ahead. The rule I wrote for her is that
-            she's <em>never</em> cruel — the second she sounds like she enjoys hurting you
-            she stops being funny. She's generous to whoever's losing and greedy toward
-            whoever's winning, and it's the same line either way.</p>
+          <p>Tall, yellow, very long arms, red bikini. She sells dubs for twelve doinks and
+            she always comes out ahead. Generous to whoever is losing, greedy toward whoever
+            is winning. Same line either way.</p>
         </div>
       </div>
       <div class="card">
-        <img src="./shots/online.jpg" loading="lazy" alt="A networked game in progress, host panel top right, four players listed">
+        <img src="./shots/online.jpg" loading="lazy" alt="A networked game in progress with the host panel top right">
         <div class="body">
           <h3><span class="who">The mark</span>Your friends</h3>
-          <p>Four to ten of them, over the internet or sat next to you. One types a code,
-            everyone rolls for turn order, and then the board decides who's still speaking
-            at the end. Empty seats fill with CPU players who have names and, regrettably,
-            opinions.</p>
+          <p>Four to ten of them, online or sat next to you. One person hosts, everyone rolls
+            for turn order, and the board sorts out the rest. Empty seats fill with CPU
+            players.</p>
         </div>
       </div>
     </div>
@@ -388,10 +408,8 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 <!-- ==================== DEVLOG ==================== -->
 <section id="log">
   <div class="shell">
-    <p class="eyebrow">Devlog · newest first</p>
-    <h2 class="h2">Building it in public, badly.</h2>
-    <p class="lede">Every post is something that broke, something that shipped, or
-      something I got wrong out loud. Two sentences and a date counts as a post.</p>
+    <p class="eyebrow">Devlog</p>
+    <h2 class="h2">Newest first.</h2>
 
     <!-- ==========================================================
          NEW ENTRY? Copy one .entry block and paste it directly
@@ -399,69 +417,64 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
          ========================================================== -->
 
     <article class="entry">
-      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Netcode</span><span class="chip">Shipped</span></div>
+      <div class="meta"><span class="date">Aug 3, 2026</span><span class="chip">Netcode</span></div>
       <h3>It's called Doobies, and it plays over the internet</h3>
 
-      <p>The networked scene used to be a connection test with doobies standing in it.
-        It's the actual game now — real board, real spaces, real minigame ladder — behind
-        a title screen you can type your name into and a code you can join with. Turn
-        order gets rolled online instead of decided by whoever loaded first.</p>
+      <p>The networked scene used to be a connection test with doobies standing in it. It's
+        the real game now, behind a title screen you can type a name into and a code you can
+        join with. Turn order gets rolled online instead of decided by who loaded first.</p>
 
-      <p>Then I made a real build and found the art in all six minigames was editor-only,
-        so every one of them shipped completely empty. It had been true for days. The
-        editor was always right there being green at me.</p>
+      <p>Then I made a real build and found the art in all six minigames was editor only, so
+        every one of them shipped empty. It had been true for days.</p>
 
       <div class="grid2" style="margin-top:1.6em">
         <figure><img src="./shots/menu.jpg" loading="lazy" alt="The Doobies title screen with name entry and a join code field">
           <figcaption><b>TITLE</b> · type a name, take a code, go</figcaption></figure>
-        <figure><img src="./shots/online.jpg" loading="lazy" alt="A live networked match, host panel top right">
+        <figure><img src="./shots/online.jpg" loading="lazy" alt="A live networked match with the host panel top right">
           <figcaption><b>LIVE</b> · hosted, and someone else is in it</figcaption></figure>
       </div>
 
-      <div class="next"><b>Next:</b> put a build in someone else's hands and watch them
-        fail to connect. It's the only test left that means anything.</div>
+      <div class="next"><b>Next:</b> put a build in someone else's hands and watch them fail
+        to connect.</div>
     </article>
 
     <article class="entry">
       <div class="meta"><span class="date">Aug 1, 2026</span><span class="chip">Rejected</span></div>
-      <h3>Squeem got a skeleton and Bumper Pit got deleted</h3>
+      <h3>Squeem got a skeleton, Bumper Pit got deleted</h3>
 
-      <p>Squeem — the casino man — went from a measured mesh to thirteen bones and nine
-        animation clips in a day, and I signed off all nine. Three more minigames landed
-        the same day: Color Call, Color Dial, Chopper Run. A fourth, Bumper Pit, I killed
-        on sight:</p>
+      <p>Squeem, the casino guy, went from a measured mesh to thirteen bones and nine
+        animation clips in a day. Three more minigames landed: Color Call, Color Dial,
+        Chopper Run. A fourth, Bumper Pit, I killed on sight:</p>
 
-      <blockquote>"It's not even really a game, there's no doobies in it, it's top down,
-        it feels like there's no user control, it's really poorly made."</blockquote>
+      <blockquote>"It's not even really a game, there's no doobies in it, it's top down, it
+        feels like there's no user control, it's really poorly made."</blockquote>
 
-      <p>Its notes said it was verified and working. It was neither. Nothing counts as
-        done here now until a human has actually <em>played</em> it.</p>
+      <p>Its notes said it was verified. It wasn't. Nothing counts as done here until
+        someone has played it.</p>
 
       <figure><img src="./shots/doinkdash.jpg" loading="lazy" alt="Doink Dash, ten players scrambling for coins on a shrinking floor">
         <figcaption><b>DOINK DASH</b> · survived the same review</figcaption></figure>
 
       <div class="next"><b>Next:</b> work out whether stealing a tile feels different from
-        painting a bare one. That's the whole design target and I still don't know.</div>
+        painting a bare one.</div>
     </article>
 
     <article class="entry">
       <div class="meta"><span class="date">Jul 31, 2026</span><span class="chip">First post</span></div>
-      <h3>I pointed everything at it at once and burned a month of tokens</h3>
+      <h3>Everything at once</h3>
 
-      <p>One day: a minigame framework with a seeded contract under it, the first minigame
-        on top of that, Squirma turning up at her own spaces to react to every landing,
-        and a HUD that survives ten players. Also every sound effect in the game existed
-        and not one of them fired, and the agents were all sharing a single git index, so
-        they kept committing each other's half-finished work.</p>
+      <p>One day: a minigame framework, the first minigame on top of it, Squirma turning up
+        at her own spaces to react to every landing, and a HUD that holds ten players. Also
+        every sound effect existed and none of them fired, and the agents shared one git
+        index so they kept committing each other's work.</p>
 
-      <p>Then I sat back and realised the number of people who knew any of it existed was
-        zero. I did the expensive part and skipped the free part. So — this. Hello.</p>
+      <p>Then I realised nobody outside this machine knew any of it existed. So, this.</p>
 
-      <figure><img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim, ten players painting territory across a tilted grid">
+      <figure><img src="./shots/colorclaim.jpg" loading="lazy" alt="Color Claim, ten players painting territory">
         <figcaption><b>COLOR CLAIM</b> · ten players, forty-five seconds, one floor</figcaption></figure>
 
-      <div class="next"><b>Next:</b> record thirty seconds of the doobies moving and put
-        it somewhere a stranger can see it.</div>
+      <div class="next"><b>Next:</b> record thirty seconds of the doobies moving and put it
+        somewhere a stranger can see it.</div>
     </article>
 
   </div>
@@ -481,27 +494,26 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 
     <p class="eyebrow">The one ask</p>
     <h2 class="h2">Come and break it with your friends.</h2>
-    <p class="lede">A party game can't be tested by one person. I need groups — four to
-      ten people in a room or on a call — willing to play something half-finished and
-      then tell me the truth about it.</p>
+    <p class="lede">A party game can't be tested by one person. I need groups of four to ten
+      who'll play something half finished and tell me the truth about it.</p>
 
     <div class="ask">
       <p style="font-weight:800;font-size:17px">What you're signing up for</p>
       <ul class="asklist">
-        <li>A build, sent to you when there's one worth playing. Windows first.</li>
-        <li>One session, whenever suits you — 30 to 60 minutes with your own people.</li>
-        <li>Telling me honestly what was boring, confusing, or annoying. Especially boring.</li>
-        <li>No spam, no newsletter, no "Doobies weekly." I'll only email you about playing.</li>
+        <li>A build, sent when there's one worth playing. Windows first.</li>
+        <li>One session, 30 to 60 minutes, whenever suits you.</li>
+        <li>Honest feedback. Especially if it was boring.</li>
+        <li>No newsletter. I'll only email you about playing.</li>
       </ul>
 
       <div class="formcard">
         <div class="bar"><span class="dot"></span>Squeem says: fill this in</div>
         <div class="inner">
           <iframe data-tally-src="https://tally.so/embed/gDV92l?alignLeft=1&amp;hideTitle=1&amp;transparentBackground=1&amp;dynamicHeight=1"
-                  loading="lazy" width="100%" height="560" frameborder="0"
+                  loading="lazy" width="100%" height="700" frameborder="0"
                   marginheight="0" marginwidth="0" title="Doobies playtest sign-up"></iframe>
         </div>
-        <p class="fallback">Form not loading? <a href="https://tally.so/r/gDV92l" target="_blank" rel="noopener">Open it in a new tab →</a></p>
+        <p class="fallback">Form not loading? <a href="https://tally.so/r/gDV92l" target="_blank" rel="noopener">Open it in a new tab</a></p>
       </div>
     </div>
   </div>
@@ -512,19 +524,15 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
     <div class="frow">
       <a href="mailto:hello@nicodaunt.com">hello@nicodaunt.com</a>
       <a href="https://tally.so/r/gDV92l" target="_blank" rel="noopener">Playtest sign-up</a>
-      <a href="https://github.com/vrnico/Doobies-Devlog" target="_blank" rel="noopener">This page's source</a>
+      <a href="https://github.com/vrnico/Doobies-Devlog" target="_blank" rel="noopener">Source</a>
     </div>
-    <p class="fnote">Doobies · a 4–10 player party game, in development in public.
-      Everything on this page is a real screenshot of the real thing, taken the day
-      it's dated. Nothing here is a mockup.</p>
+    <p class="fnote">Every screenshot on this page is the real game, taken the day it's dated.</p>
   </div>
 </footer>
 
 <script>
-// Hero background footage. The poster image is always there; the 2MB clip only
-// downloads if the visitor is on a wide screen, isn't on a metered connection,
-// and hasn't asked for reduced motion. It fades in when it can actually play,
-// so nobody ever sees a black rectangle waiting for a video.
+// Hero background footage. The poster is always there; the clip only downloads on a
+// wide screen, off save-data, and when the visitor hasn't asked for reduced motion.
 (function(){
   var v = document.getElementById('bgvid');
   if (!v) return;
@@ -538,9 +546,8 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
   v.src = './media/bg.mp4';
   v.load();
   var go = v.play();
-  if (go && go.catch) go.catch(function(){ /* autoplay refused — poster stays */ });
+  if (go && go.catch) go.catch(function(){});
 
-  // don't decode video nobody is looking at
   document.addEventListener('visibilitychange', function(){
     if (document.hidden) v.pause(); else v.play().catch(function(){});
   });
@@ -549,8 +556,6 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
 
 <script async src="https://tally.so/widgets/embed.js"></script>
 <script>
-// Tally's documented loader — swaps data-tally-src in once the widget script lands,
-// and fills the src directly if the script is blocked so the form still appears.
 (function(){
   var load = function(){
     if (typeof Tally !== 'undefined') { Tally.loadEmbeds(); return; }
@@ -561,6 +566,154 @@ footer{border-top:1px solid var(--line);padding:2.6em 0 4.5em;margin-top:2em}
   if (document.readyState !== 'loading') load();
   else document.addEventListener('DOMContentLoaded', load);
   window.addEventListener('load', load);
+})();
+</script>
+
+<!-- ================================================================
+     EDIT MODE
+     Open this file from disk (or localhost) and every bit of copy
+     gets a pencil next to it. Click, type, then Export index.html.
+     On the published site none of this runs.
+     ================================================================ -->
+<script id="ed-script">
+(function(){
+  var local = location.protocol === 'file:' ||
+              /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  if (!local) return;
+
+  // every piece of copy on the page
+  var SEL = [
+    '.brand','.nav a.lnk','.nav a.cta',
+    '.tag','.sub','.btn','.status',
+    '.facts b','.facts span',
+    '.eyebrow','.h2','.lede',
+    'figcaption','.card h3','.card p',
+    '.date','.chip','.entry h3','.entry p','blockquote','.next',
+    '.ask > p','.asklist li','.formcard .bar','.fallback',
+    '.frow a','.fnote'
+  ].join(',');
+
+  var dirty = false, allOn = false, bar, status;
+
+  function mark(el){
+    if (el.closest('#ed-bar')) return;
+    el.classList.add('ed-target');
+    var b = document.createElement('button');
+    b.className = 'ed-btn';
+    b.type = 'button';
+    b.title = 'Edit this';
+    b.setAttribute('contenteditable','false');
+    b.textContent = '✎';
+    b.addEventListener('mousedown', function(e){ e.preventDefault(); });
+    b.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation(); edit(el);
+    });
+    el.insertBefore(b, el.firstChild);
+  }
+
+  function edit(el){
+    el.setAttribute('contenteditable','true');
+    el.focus();
+    var r = document.createRange();
+    r.selectNodeContents(el);
+    r.collapse(false);                       // caret at the end, nothing selected
+    var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }
+
+  function stop(el){
+    el.removeAttribute('contenteditable');
+    setDirty(true);
+  }
+
+  function setDirty(v){
+    dirty = v;
+    if (!status) return;
+    status.textContent = v ? 'unsaved' : 'saved';
+    status.className = 'st' + (v ? ' dirty' : '');
+  }
+
+  // strip every trace of edit mode, then hand back a clean file
+  function exportHtml(){
+    var doc = document.documentElement.cloneNode(true);
+    doc.querySelectorAll('.ed-btn, #ed-bar').forEach(function(n){ n.remove(); });
+    doc.querySelectorAll('.ed-target').forEach(function(n){
+      n.removeAttribute('contenteditable');
+      n.classList.remove('ed-target');
+      if (!n.getAttribute('class')) n.removeAttribute('class');
+    });
+    doc.querySelectorAll('video').forEach(function(n){
+      n.classList.remove('on');
+      n.removeAttribute('src');
+      if (!n.getAttribute('class')) n.removeAttribute('class');
+    });
+    doc.querySelectorAll('iframe[data-tally-src]').forEach(function(n){ n.removeAttribute('src'); });
+
+    var html = '<!doctype html>\n' + doc.outerHTML + '\n';
+    var url = URL.createObjectURL(new Blob([html], {type:'text/html'}));
+    var a = document.createElement('a');
+    a.href = url; a.download = 'index.html';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
+    setDirty(false);
+  }
+
+  function buildBar(){
+    bar = document.createElement('div');
+    bar.id = 'ed-bar';
+    bar.innerHTML =
+      '<span class="st">saved</span>' +
+      '<button type="button" data-a="all">Edit everything</button>' +
+      '<button type="button" class="primary" data-a="export">Export index.html</button>';
+    document.body.appendChild(bar);
+    status = bar.querySelector('.st');
+    bar.addEventListener('click', function(e){
+      var a = e.target.getAttribute && e.target.getAttribute('data-a');
+      if (a === 'export') exportHtml();
+      if (a === 'all') {
+        allOn = !allOn;
+        document.querySelectorAll('.ed-target').forEach(function(el){
+          if (allOn) el.setAttribute('contenteditable','true');
+          else el.removeAttribute('contenteditable');
+        });
+        e.target.textContent = allOn ? 'Stop editing' : 'Edit everything';
+      }
+    });
+  }
+
+  function init(){
+    document.querySelectorAll(SEL).forEach(mark);
+    buildBar();
+
+    document.addEventListener('input', function(e){
+      if (e.target.closest && e.target.closest('.ed-target')) setDirty(true);
+    });
+    document.addEventListener('focusout', function(e){
+      var t = e.target;
+      if (!allOn && t && t.classList && t.classList.contains('ed-target')) stop(t);
+    }, true);
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') {
+        var a = document.activeElement;
+        if (a && a.classList && a.classList.contains('ed-target')) { a.blur(); }
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault(); exportHtml();
+      }
+    });
+    window.addEventListener('beforeunload', function(e){
+      if (dirty) { e.preventDefault(); e.returnValue = ''; }
+    });
+    // links would navigate away mid-edit
+    document.addEventListener('click', function(e){
+      var a = e.target.closest && e.target.closest('a');
+      if (a && a.classList.contains('ed-target') && a.getAttribute('contenteditable') === 'true') {
+        e.preventDefault();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 </script>
 
